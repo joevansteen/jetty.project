@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
-  <id>config</id>
+  <id>home</id>
   <includeBaseDirectory>false</includeBaseDirectory>
   <formats>
     <format>jar</format>
   </formats>
   <fileSets>
     <fileSet>
-      <directory>src/main/config</directory>
+      <directory>src/main/home</directory>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>webapps/test-jaas.xml</include>
         <include>**</include>
       </includes>
     </fileSet>
   </fileSets>
 </assembly>
-

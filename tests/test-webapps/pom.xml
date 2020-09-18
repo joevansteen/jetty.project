@@ -31,6 +31,7 @@
     </plugins>
   </build>
   <modules>
+    <module>demo-base-webapp</module>
     <module>test-jetty-webapp</module>
     <module>test-proxy-webapp</module>
     <module>test-webapp-rfc2616</module>

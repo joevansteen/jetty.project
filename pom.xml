@@ -457,6 +457,11 @@
               <artifactId>jetty-assembly-descriptors</artifactId>
               <version>1.0</version>
             </dependency>
+            <dependency>
+              <groupId>org.eclipse.jetty</groupId>
+              <artifactId>build-resources</artifactId>
+              <version>${project.version}</version>
+            </dependency>
           </dependencies>
         </plugin>
         <plugin>
@@ -1232,6 +1237,37 @@
         </plugins>
       </build>
     </profile>
+    <!-- for packaging up resources meant for jetty-home -->
+    <profile>
+      <id>home-config</id>
+      <activation>
+        <file>
+          <exists>src/main/home</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>assembly-home-config</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <descriptorRefs>
+                    <descriptorRef>home-config</descriptorRef>
+                  </descriptorRefs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>config</id>
       <activation>
@@ -1246,6 +1282,7 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <executions>
               <execution>
+                <id>assembly-config</id>
                 <phase>package</phase>
                 <goals>
                   <goal>single</goal>

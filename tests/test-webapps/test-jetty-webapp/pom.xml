@@ -89,45 +89,10 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${project.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-client</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlets</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <stopPort>8087</stopPort>
-          <stopKey>foo</stopKey>
-          <scan>1</scan>
-          <systemProperties>
-              <fooprop>222</fooprop>
-          </systemProperties>
-          <webApp>
-            <contextPath>/test</contextPath>
-            <tempDirectory>${project.build.directory}/work</tempDirectory>
-          </webApp>
-          <loginServices>
-            <loginService implementation="org.eclipse.jetty.security.HashLoginService">
-              <name>Test Realm</name>
-              <config>src/main/config/demo-base/etc/realm.properties</config>
-            </loginService>
-          </loginServices>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <!-- must deploy: required for jetty-distribution -->
+          <!-- DEMO Project, Must Deploy -->
           <skip>false</skip>
         </configuration>
       </plugin>
@@ -226,6 +191,59 @@
     </dependency>
   </dependencies>
   <profiles>
+    <profile>
+      <!--
+        WARNING: not enabled by default, as it introduces a cyclic reference in the build reactor.
+        [ERROR] The projects in the reactor contain a cyclic reference:
+          Edge between 'Vertex{label='org.eclipse.jetty:jetty-home:10.0.0-SNAPSHOT'}' and
+          'Vertex{label='org.eclipse.jetty:test-jetty-webapp:10.0.0-SNAPSHOT'}'
+          introduces to cycle in the graph:
+           1: org.eclipse.jetty:test-jetty-webapp:10.0.0-SNAPSHOT
+           2: org.eclipse.jetty:jetty-maven-plugin:10.0.0-SNAPSHOT
+           3: org.eclipse.jetty:jetty-home:10.0.0-SNAPSHOT
+           4: org.eclipse.jetty:test-jetty-webapp:10.0.0-SNAPSHOT @
+        -->
+      <id>jetty-maven-plugin</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-client</artifactId>
+                <version>${project.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-servlets</artifactId>
+                <version>${project.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <stopPort>8087</stopPort>
+              <stopKey>foo</stopKey>
+              <scan>1</scan>
+              <systemProperties>
+                <fooprop>222</fooprop>
+              </systemProperties>
+              <webApp>
+                <contextPath>/test</contextPath>
+                <tempDirectory>${project.build.directory}/work</tempDirectory>
+              </webApp>
+              <loginServices>
+                <loginService implementation="org.eclipse.jetty.security.HashLoginService">
+                  <name>Test Realm</name>
+                  <config>src/main/config/demo-base/etc/realm.properties</config>
+                </loginService>
+              </loginServices>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>precompile-jsp</id>
       <build>

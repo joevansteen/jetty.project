@@ -19,7 +19,6 @@ websocket-javax
 websocket-jetty
 
 [files]
-webapps/test-jetty.d/
-basehome:modules/demo.d/test-jetty.xml|webapps/test-jetty.xml
-maven://org.eclipse.jetty/test-jetty-webapp/${jetty.version}/war|webapps/test-jetty.war
-basehome:modules/demo.d/test-jetty-override-web.xml|webapps/test-jetty.d/test-jetty-override-web.xml
+maven://org.eclipse.jetty/test-jetty-webapp/${jetty.version}/jar/config|extract:/
+maven://org.eclipse.jetty/test-jetty-webapp/${jetty.version}/war|webapps/test.war
+

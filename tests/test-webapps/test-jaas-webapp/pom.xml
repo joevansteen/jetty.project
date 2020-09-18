@@ -18,50 +18,53 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <!-- DO NOT DEPLOY (or Release) -->
-          <skip>true</skip>
+          <!-- DEMO Project, Must Deploy -->
+          <skip>false</skip>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${project.version}</version>
-        <configuration>
-          <scan>10</scan>
-          <systemProperties>
-            <!-- This is for convenience so that the src/etc/login.conf file can stay unmodified when copied to $jetty.home/etc directory -->
-              <jetty.base>${basedir}/src/main/config/demo-base</jetty.base>
-            <!-- Mandatory. This system property tells JAAS where to find the login module configuration file -->
-              <java.security.auth.login.config>${basedir}/src/main/config/demo-base/etc/login.conf</java.security.auth.login.config>
-          </systemProperties>
-          <webApp>
-            <contextPath>/test-jaas</contextPath>
-            <securityHandler implementation="org.eclipse.jetty.security.ConstraintSecurityHandler">
-              <loginService implementation="org.eclipse.jetty.jaas.JAASLoginService">
-                <name>Test JAAS Realm</name>
-                <loginModuleName>xyz</loginModuleName>
-              </loginService>
-            </securityHandler>
-          </webApp>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>${basedir}/src/main/assembly/config.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <!--
+        WARNING: not enabled by default, as it introduces a cyclic reference in the build reactor.
+        [ERROR] The projects in the reactor contain a cyclic reference:
+          Edge between 'Vertex{label='org.eclipse.jetty:jetty-home:10.0.0-SNAPSHOT'}' and
+          'Vertex{label='org.eclipse.jetty.tests:test-jaas-webapp:10.0.0-SNAPSHOT'}'
+          introduces to cycle in the graph:
+           1: org.eclipse.jetty.tests:test-jaas-webapp:10.0.0-SNAPSHOT
+           2: org.eclipse.jetty:jetty-maven-plugin:10.0.0-SNAPSHOT
+           3: org.eclipse.jetty:jetty-home:10.0.0-SNAPSHOT
+           4: org.eclipse.jetty.tests:test-jaas-webapp:10.0.0-SNAPSHOT @
+        -->
+      <id>jetty-maven-plugin</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <configuration>
+              <scan>10</scan>
+              <systemProperties>
+                <!-- This is for convenience so that the src/etc/login.conf file can stay unmodified when copied to $jetty.home/etc directory -->
+                <jetty.base>${basedir}/src/main/config/demo-base</jetty.base>
+                <!-- Mandatory. This system property tells JAAS where to find the login module configuration file -->
+                <java.security.auth.login.config>${basedir}/src/main/config/demo-base/etc/login.conf</java.security.auth.login.config>
+              </systemProperties>
+              <webApp>
+                <contextPath>/test-jaas</contextPath>
+                <securityHandler implementation="org.eclipse.jetty.security.ConstraintSecurityHandler">
+                  <loginService implementation="org.eclipse.jetty.jaas.JAASLoginService">
+                    <name>Test JAAS Realm</name>
+                    <loginModuleName>xyz</loginModuleName>
+                  </loginService>
+                </securityHandler>
+              </webApp>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
